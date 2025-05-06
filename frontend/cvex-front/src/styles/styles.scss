@@ -1,0 +1,28 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Import/write your custom styles here.
+/*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
+/* ----------------------------------------------------------------------------------------------------- */
+
+/* Importing Bootstrap SCSS file. */
+//@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
+.snackbar-error {
+    background-color: #f32a35 !important;
+    color: white;
+    font-weight: bold !important;
+    font-size: 14px !important;
+}
+
+.snackbar-success {
+    background-color: #4caf50 !important;
+    color: white;
+    font-weight: bold !important;
+    font-size: 14px !important;
+}
+
+.snackbar-warning {
+    background-color: #ff9800 !important;
+    color: white;
+    font-weight: bold !important;
+    font-size: 14px !important;
+}

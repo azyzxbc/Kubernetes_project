@@ -1,0 +1,123 @@
+<h1
+    class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6"
+    mat-dialog-title
+>
+    Client Details: <span class="text-red-600">{{ data.nom_client }}</span>
+</h1>
+
+<div mat-dialog-content>
+    <!-- ID -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">ID:</span>
+        <span
+            class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md shadow-sm"
+        >
+            {{ data.id }}
+        </span>
+    </div>
+
+    <!-- Client Name -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">Client Name:</span>
+        <span
+            class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md shadow-sm"
+        >
+            {{ data.nom_client }}
+        </span>
+    </div>
+
+    <!-- Address -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">Address:</span>
+        <span
+            class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md shadow-sm"
+        >
+            {{ data.adresse }}
+        </span>
+    </div>
+
+    <!-- City -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">City:</span>
+        <span
+            class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md shadow-sm"
+        >
+            {{ data.ville }}
+        </span>
+    </div>
+
+    <!-- Postal Code -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">Postal Code:</span>
+        <span
+            class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md shadow-sm"
+        >
+            {{ data.code_postale }}
+        </span>
+    </div>
+
+    <!-- Phone -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">Phone:</span>
+        <span
+            class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md shadow-sm"
+        >
+            {{ data.telephone }}
+        </span>
+    </div>
+
+    <!-- Mobile -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">Mobile:</span>
+        <span
+            class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md shadow-sm"
+        >
+            {{ data.mobile }}
+        </span>
+    </div>
+
+    <!-- Email -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">Email:</span>
+        <a
+            class="text-blue-600 hover:text-blue-800 text-sm"
+            href="mailto:{{ data.courriel }}"
+        >
+            {{ data.courriel }}
+        </a>
+    </div>
+
+    <!-- Website -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">Website:</span>
+        <a
+            class="text-blue-600 hover:text-blue-800 text-sm"
+            href="{{ data.site_web }}"
+            target="_blank"
+        >
+            {{ data.site_web }}
+        </a>
+    </div>
+
+    <!-- Language -->
+    <div class="flex justify-between items-center">
+        <span class="font-medium text-gray-600 text-sm">Language:</span>
+        <span
+            class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md shadow-sm"
+        >
+            {{ data.langue }}
+        </span>
+    </div>
+</div>
+<div
+    mat-dialog-actions
+    align="end"
+    class="flex items-center justify-end px-5 py-4 border-t rounded-b mt-4"
+>
+    <button
+        mat-button
+        mat-dialog-close
+    >
+        Close
+    </button>
+</div>

@@ -1,0 +1,233 @@
+<!-- Dialog Header -->
+<h2 mat-dialog-title class="flex justify-between items-center">
+    <span>Create New Job</span>
+    <button
+        mat-icon-button
+        aria-label="Close dialog"
+        class="text-gray-500 hover:text-gray-800"
+        (click)="close()"
+    >
+        <mat-icon>close</mat-icon>
+    </button>
+</h2>
+
+<!-- Tabs -->
+<div mat-dialog-content>
+    <div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+            <!-- Job Name -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Job Name</mat-label>
+                <input
+                    matInput
+                    formControlName="job_name"
+                    placeholder="Enter Job Name"
+                />
+                <mat-error *ngIf="form.get('job_name')?.hasError('required')">
+                    Job Name is required.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Job Status and Destination -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Job Status</mat-label>
+                    <mat-select formControlName="job_status">
+                        <mat-option
+                            *ngFor="
+                                let status of ['open', 'on hold', 'completed', 'canceled']
+                            "
+                            [value]="status"
+                        >
+                            {{ status | transloco }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="form.get('job_status')?.hasError('required')"
+                    >
+                        Job Status is required.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Job Destination</mat-label>
+                    <mat-select formControlName="destination">
+                        <mat-option
+                            *ngFor="
+                                let destination of ['placement', 'post vacant']
+                            "
+                            [value]="destination"
+                        >
+                            {{ destination | transloco }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="form.get('destination')?.hasError('required')"
+                    >
+                        Job Destination is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <!-- Job Description (2/3 width) -->
+                <mat-form-field
+                    appearance="outline"
+                    class="w-full sm:col-span-2"
+                >
+                    <mat-label
+                        >Job Description (Write a job description or drop a file
+                        )</mat-label
+                    >
+                    <textarea
+                        matInput
+                        [disabled]="files.length > 0"
+                        formControlName="description"
+                        rows="3"
+                        placeholder="Enter description"
+                    ></textarea>
+                    <mat-error
+                        *ngIf="form.get('description')?.hasError('required')"
+                    >
+                        Description is required.
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- File Upload (1/3 width) -->
+                <div class="border border-dashed p-4 rounded-md sm:col-span-1">
+                    <label
+                        for="uploadFile"
+                        class="block text-center text-gray-500 cursor-pointer hover:text-gray-800"
+                    >
+                        Drop files here or
+                        <span class="text-blue-500 underline">browse</span>
+                    </label>
+                    <input
+                        type="file"
+                        id="uploadFile"
+                        hidden
+                        (change)="onFileSelected($event)"
+                    />
+                    <div *ngIf="fileName" class="mt-2 text-center">
+                        Selected File: <strong>{{ fileName }}</strong>
+                        <button
+                            mat-icon-button
+                            color="warn"
+                            (click)="clearFile()"
+                            aria-label="Clear selected file"
+                        >
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client, Location, Start Date -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Client</mat-label>
+                    <mat-select formControlName="target_client">
+                        <mat-option
+                            *ngFor="let client of clients"
+                            [value]="client.id"
+                        >
+                            {{ client.nom_client }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="form.get('target_client')?.hasError('required')"
+                    >
+                        Client is required.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Location</mat-label>
+                    <mat-select formControlName="location">
+                        <mat-option value="" disabled
+                            >Select a country</mat-option
+                        >
+                        <mat-option
+                            *ngFor="let country of countries"
+                            [value]="country.name.common"
+                        >
+                            {{ country.name.common }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="form.get('location')?.hasError('required')"
+                    >
+                        Location is required.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Start Date</mat-label>
+                    <input matInput type="date" formControlName="start_date" />
+                    <mat-error
+                        *ngIf="form.get('start_date')?.hasError('required')"
+                    >
+                        Start Date is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Salary -->
+            <div class="grid grid-cols-2 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Min Salary</mat-label>
+                    <input
+                        matInput
+                        type="number"
+                        formControlName="salaire_minimum"
+                    />
+                    <mat-error
+                        *ngIf="form.get('salaire_minimum')?.hasError('required')"
+                    >
+                        Minimum Salary is required.
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Max Salary</mat-label>
+                    <input
+                        matInput
+                        type="number"
+                        formControlName="salaire_maximum"
+                    />
+                    <mat-error
+                        *ngIf="form.get('salaire_maximum')?.hasError('required')"
+                    >
+                        Maximum Salary is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Note -->
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Note</mat-label>
+                <textarea
+                    matInput
+                    formControlName="note"
+                    rows="2"
+                    placeholder="Additional notes"
+                ></textarea>
+                <mat-error *ngIf="form.get('note')?.hasError('required')">
+                    Note is required.
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+</div>
+
+<!-- Dialog Actions -->
+<mat-dialog-actions align="end" class="mt-4">
+    <button mat-raised-button color="accent" (click)="onSubmit()">
+        <mat-icon
+            class="icon-size-5"
+            [svgIcon]="'heroicons_solid:plus'"
+        ></mat-icon>
+        <span class="ml-2"> Create</span>
+    </button>
+    <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

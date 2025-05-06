@@ -1,0 +1,387 @@
+<div
+    class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent"
+    cdkScrollable
+>
+    <div
+        class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 px-6 md:px-8 border-b bg-white"
+    >
+        <!-- Left Section -->
+        <div class="flex-1">
+            <div
+                class="text-4xl font-extrabold tracking-tight uppercase group relative"
+            >
+                ALL JOBS
+                <mat-icon class="cursor-pointer ml-2" (click)="toggleTooltip()">
+                    info
+                </mat-icon>
+                <div
+                    *ngIf="tooltipVisible"
+                    class="absolute top-full left-0 mt-2 px-4 py-2 text-sm text-white bg-gray-800 rounded-md shadow-lg z-10 transition-opacity duration-200 opacity-100"
+                >
+                    Détails sur les Jobs
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div
+            class="flex items-center mt-4 sm:mt-0 sm:ml-4 sm:justify-end gap-4"
+        >
+            <!-- Search Field -->
+            <mat-form-field
+                class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded w-full min-w-64"
+                [floatLabel]="'always'"
+            >
+                <mat-icon
+                    matPrefix
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:search'"
+                ></mat-icon>
+                <input
+                    placeholder="{{ 'placement.search' | transloco }}"
+                    matInput
+                    #query
+                    (input)="applyFilter(query.value)"
+                />
+            </mat-form-field>
+            <div
+                class="flex items-center gap-2 mt-4 sm:mt-0 sm:ml-4 sm:justify-end"
+            >
+                <button
+                    class="fuse-mat-button-rounded bg-red-500"
+                    mat-flat-button
+                    (click)="refreshData()"
+                    [color]="'accent'"
+                >
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:refresh'"
+                    ></mat-icon>
+                    <span class="ml-2"> Refresh </span>
+                </button>
+                <button
+                    class="fuse-mat-button-rounded bg-red-500"
+                    mat-flat-button
+                    (click)="viewAddJob()"
+                    [color]="'accent'"
+                    *hasPermission="'create:job'"
+
+                >
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:plus'"
+                    ></mat-icon>
+                    <span class="ml-2"> Create Job</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-auto">
+        <div
+            class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto"
+        >
+            <!-- Table -->
+            <table
+                mat-table
+                [dataSource]="fileDataSource"
+                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                matSort
+                *ngIf="!isLoading"
+            >
+                <!-- Colonne Nom de Fichier -->
+                <ng-container matColumnDef="file_name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Job Name
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.file_name }}
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Location -->
+                <ng-container matColumnDef="location">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Location
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.location ? element.location : "Pas encore" }}
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Salaire Minimum -->
+                <ng-container matColumnDef="salaire_minimum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Min Salary
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{
+                            element.salaire_minimum
+                                ? (element.salaire_minimum | currency : "TND")
+                                : "Négociable"
+                        }}
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Salaire Maximum -->
+                <ng-container matColumnDef="salaire_maximum">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Max Salary
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{
+                            element.salaire_maximum
+                                ? (element.salaire_maximum | currency : "TND")
+                                : "Négociable"
+                        }}
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Note -->
+                <ng-container matColumnDef="note">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Note
+                    </th>
+                    <td
+                        mat-cell
+                        *matCellDef="let element; let i = index"
+                        class="relative"
+                    >
+                        <!-- Bouton pour afficher/masquer la note -->
+                        <div style="position: relative; display: inline-block">
+                            <button
+                                mat-icon-button
+                                color="primary"
+                                matTooltip="View Note"
+                                (click)="toggleVisibleNote(i)"
+                            >
+                                <mat-icon>edit_note</mat-icon>
+                            </button>
+
+                            <!-- Note affichée uniquement si son index correspond à activeNoteIndex -->
+                            <div
+                                *ngIf="activeNoteIndex === i"
+                                class="note-popup bg-gray-200 text-black rounded-lg shadow-md p-2 mt-2"
+                            >
+                                {{ element.note ? element.note : "Pas encore" }}
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Date de Début -->
+                <ng-container matColumnDef="start_date">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Start Date
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{
+                            element.start_date
+                                ? (element.start_date | date : "dd/MM/yyyy")
+                                : "Pas encore"
+                        }}
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Destination -->
+                <ng-container matColumnDef="destination">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Destination
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.destination }}
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Client -->
+                <ng-container matColumnDef="target_client">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Client
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ getClientNameByID(element.target_client) }}
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Statut -->
+                <ng-container matColumnDef="job_status">
+                    <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                        mat-sort-header
+                        class="justify-center items-center"
+                    >
+                        Status
+                    </th>
+                    <td
+                        mat-cell
+                        *matCellDef="let element"
+                        class="w-3.5 h-3.5 rounded-full"
+                        [ngStyle]="{
+                            color: getStatusColor(element.job_status)
+                        }"
+                    >
+                        <div class="flex justify-center items-center space-x-1">
+                            <span
+                                class="w-3.5 h-3.5 rounded-full"
+                                [ngStyle]="{
+                                    backgroundColor: getStatusColor(
+                                        element.job_status
+                                    )
+                                }"
+                            ></span>
+                            <select
+                                [(ngModel)]="element.job_status"
+                                (ngModelChange)="
+                                    onStatusChange(element, element.job_status)
+                                "
+                                class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                <option
+                                    *ngFor="let status of statuses"
+                                    [value]="status"
+                                    [ngStyle]="{
+                                        color: getStatusColor(status)
+                                    }"
+                                    class="font-bold"
+                                >
+                                    {{ status }}
+                                </option>
+                            </select>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Colonne Actions -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <span>Actions</span>
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="flex justify-center items-center">
+                            <button
+                                mat-icon-button
+                                color="primary"
+                                matTooltip="View Details"
+                                (click)="viewJobDetails(element)"
+                                *hasPermission="'view:job'"
+
+                            >
+                                <mat-icon>visibility</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                color="primary"
+                                matTooltip="Find Matching Candidate "
+                                (click)="onButtonClicked(element.id)"
+                                *hasPermission="'matching:job'"
+
+                            >
+                                <svg
+                                    fill="#0077b5"
+                                    version="1.1"
+                                    id="Capa_1"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    width="24px"
+                                    height="24px"
+                                    viewBox="0 0 964.8 964.8"
+                                    xml:space="preserve"
+                                    stroke="#0077b5"
+                                >
+                                    <g
+                                        id="SVGRepo_bgCarrier"
+                                        stroke-width="0"
+                                    ></g>
+                                    <g
+                                        id="SVGRepo_tracerCarrier"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    ></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <g>
+                                            <g>
+                                                <path
+                                                    d="M166.48,328.9c4.4-5.6,8.9-11.1,13.6-16.4c6-6.9,12.3-13.7,18.9-20.2c23.7-23.7,49.9-44,78.4-60.9v-6.6 c0-15.4-12.5-27.8-27.8-27.8h-30.9c-5.5,0-10.6,2.6-13.7,7.1l-45.6,64.5l-11.1-23.4l17.7-37.2c2.4-5.1-1.3-11-6.9-11h-35.4 c-5.6,0-9.4,5.9-6.9,11l17.7,37.2l-10.9,23l-44.5-63.9c-3.1-4.5-8.3-7.3-13.8-7.3h-32.5c-15.4,0-27.8,12.5-27.8,27.8v184.9h112.7 C130.78,380.8,147.081,353.8,166.48,328.9z"
+                                                ></path>
+                                                <path
+                                                    d="M51.48,89.6c0,49.4,40.2,89.6,89.6,89.6s89.6-40.2,89.6-89.6c0-49.4-40.2-89.6-89.6-89.6S51.48,40.2,51.48,89.6z"
+                                                ></path>
+                                                <path
+                                                    d="M896.28,197c-5.5,0-10.6,2.6-13.7,7.1l-45.6,64.5l-11.1-23.4L843.58,208c2.4-5.1-1.3-11-6.899-11h-35.4 c-5.6,0-9.399,5.9-6.899,11l17.699,37.2l-10.899,23l-44.4-63.9c-3.1-4.5-8.3-7.3-13.8-7.3h-32.5c-15.4,0-27.8,12.5-27.8,27.8v7.1 c28.1,16.7,54,36.9,77.399,60.3c6.801,6.8,13.301,13.8,19.5,20.9c4.4,5.1,8.801,10.4,12.9,15.7c19.4,24.9,35.8,51.9,48.8,80.8 h113.7V224.8c0-15.4-12.5-27.8-27.8-27.8H896.28L896.28,197z"
+                                                ></path>
+                                                <path
+                                                    d="M729.181,89.6c0,49.4,40.2,89.6,89.6,89.6c49.4,0,89.601-40.2,89.601-89.6c0-49.4-40.2-89.6-89.601-89.6 C769.381,0,729.181,40.2,729.181,89.6z"
+                                                ></path>
+                                                <path
+                                                    d="M940.28,875.2L817.381,781c-16.101,26.2-35.301,50.399-57.301,72.399c-1.8,1.801-3.699,3.601-5.6,5.4l124.9,95.7 c9.1,7,19.8,10.3,30.399,10.3c15,0,29.9-6.7,39.7-19.6C966.28,923.399,962.181,892,940.28,875.2z"
+                                                ></path>
+                                                <path
+                                                    d="M616.08,571c0-15.4-12.5-27.8-27.8-27.8h-30.899c-5.5,0-10.601,2.6-13.7,7.1l-45.601,64.5l-11.1-23.4l17.7-37.199 c2.399-5.101-1.3-11-6.9-11h-35.399c-5.601,0-9.4,5.899-6.9,11l17.7,37.199l-10.9,23l-44.3-63.899c-3.1-4.5-8.3-7.3-13.8-7.3 h-32.5c-15.4,0-27.8,12.5-27.8,27.8v184.899h272.3V571H616.08z"
+                                                ></path>
+                                                <path
+                                                    d="M479.98,525.5c49.4,0,89.6-40.2,89.6-89.601c0-49.399-40.199-89.6-89.6-89.6s-89.6,40.2-89.6,89.6 C390.381,485.3,430.58,525.5,479.98,525.5z"
+                                                ></path>
+                                                <path
+                                                    d="M334.78,915.399c45.9,19.4,94.601,29.2,144.7,29.2c50.2,0,98.9-9.8,144.7-29.2c40.899-17.3,77.899-41.5,110.2-71.899 c2.699-2.5,5.399-5.101,8-7.7c21.199-21.2,39.6-44.7,55-70c9.3-15.5,17.6-31.5,24.6-48.2c19.4-45.899,29.2-94.6,29.2-144.7 c0-50.1-9.8-98.899-29.2-144.699c-2.6-6.2-5.4-12.4-8.4-18.4c-18-36.9-41.899-70.4-71.3-99.8c-18.3-18.3-38.3-34.5-59.7-48.5 c-18.5-12.1-38-22.5-58.5-31.2c-45.899-19.4-94.6-29.2-144.699-29.2c-50.2,0-98.9,9.8-144.7,29.2c-20.101,8.5-39.3,18.7-57.5,30.5 c-21.8,14.1-42.1,30.5-60.7,49.1c-29.3,29.3-53.2,62.8-71.3,99.8c-2.9,6-5.8,12.199-8.4,18.399c-19.4,45.9-29.2,94.601-29.2,144.7 s9.8,98.9,29.2,144.7c18.7,44.3,45.5,84,79.7,118.2C250.681,869.8,290.48,896.6,334.78,915.399z M271.181,409.7c2-2.5,4-5,6.1-7.4 c4.8-5.7,9.8-11.2,15.2-16.5c50-50,116.4-77.5,187.1-77.5c70.7,0,137.101,27.5,187,77.5c5.7,5.7,11.101,11.6,16.2,17.7 c1.7,2.1,3.4,4.1,5.101,6.3c36.5,46.4,56.199,103.2,56.199,163.1c0,70.7-27.5,137.101-77.5,187.101s-116.399,77.5-187,77.5 c-70.6,0-137.1-27.5-187-77.5c-50-50-77.5-116.4-77.5-187.101C214.98,512.899,234.78,456.1,271.181,409.7z"
+                                                ></path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </button>
+                            <button
+                                mat-icon-button
+                                color="accent"
+                                matTooltip="Edit Job"
+                                (click)="viewEditJob(element.id)"
+                                *hasPermission="'update:job'"
+
+                            >
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                color="warn"
+                                matTooltip="Delete Job"
+                                (click)="deleteOrArchiveJobById(element.id)"
+                                *hasPermission="'delete:job'"
+
+                            >
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Définitions des en-têtes et lignes -->
+                <!-- Header Row -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+                <!-- Data Row -->
+                <tr
+                    class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                ></tr>
+            </table>
+
+            <mat-paginator
+                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                [length]="totalItems"
+                [pageSizeOptions]="[10, 20, 25, 100]"
+                aria-label="Select page"
+                [showFirstLastButtons]="true"
+                (page)="handlePageEvent($event)"
+            ></mat-paginator>
+
+            <div
+                class="w-full p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center"
+                *ngIf="!isLoading && !fileDataSource?.data.length"
+            >
+                Il n'y a pas de postes vacants !
+            </div>
+        </div>
+    </div>
+</div>

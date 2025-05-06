@@ -1,0 +1,127 @@
+<h1 mat-dialog-title class="text-2xl font-bold text-gray-800 border-b pb-4">
+    Détails du job : <span class="text-red-600">{{ data.file_name }}</span>
+</h1>
+
+<div mat-dialog-content>
+    <div>
+        <!-- Nom de fichier -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm"
+                >Nom de fichier :</span
+            >
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.file_name }}
+            </span>
+        </div>
+
+        <!-- Description -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm">Description :</span>
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.description }}
+            </span>
+        </div>
+
+        <!-- Emplacement -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm">Emplacement :</span>
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.location }}
+            </span>
+        </div>
+
+        <!-- Salaire Minimum -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm"
+                >Salaire Minimum :</span
+            >
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.salaire_minimum }}
+            </span>
+        </div>
+
+        <!-- Salaire Maximum -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm"
+                >Salaire Maximum :</span
+            >
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.salaire_maximum }}
+            </span>
+        </div>
+
+        <!-- Note -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm">Note :</span>
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.note }}
+            </span>
+        </div>
+
+        <!-- Date de début -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm"
+                >Date de début :</span
+            >
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data?.start_date }}
+            </span>
+        </div>
+
+        <!-- Statut du Job -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm"
+                >Statut du Job :</span
+            >
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.job_status === "open" ? "Ouvert" : "Fermé" }}
+            </span>
+        </div>
+
+        <!-- Client Cible -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm"
+                >Client Cible :</span
+            >
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.target_client }}
+            </span>
+        </div>
+
+        <!-- Destination -->
+        <div class="flex justify-between items-center">
+            <span class="font-medium text-gray-600 text-sm">Destination :</span>
+            <span
+                class="text-gray-800 text-sm px-3 py-2 bg-gray-100 rounded-md"
+            >
+                {{ data.destination }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<div
+    mat-dialog-actions
+    align="end"
+    class="flex items-center justify-end px-5 py-4 border-t rounded-b mt-4"
+>
+    <button mat-button mat-dialog-close>Close</button>
+</div>

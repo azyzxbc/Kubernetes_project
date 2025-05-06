@@ -1,0 +1,219 @@
+<div
+    class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent"
+    cdkScrollable
+>
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 px-6 md:px-8 border-b bg-white"
+    >
+        <!-- Left Section -->
+        <div class="flex-1">
+            <div
+                class="text-4xl font-extrabold tracking-tight uppercase group relative"
+            >
+                <!-- Titre avec l'icône d'information devant -->
+                CLIENT
+                <mat-icon class="cursor-pointer ml-2" (click)="toggleTooltip()"
+                    >info</mat-icon
+                >
+
+                <!-- Tooltip qui s'affiche au clic sur l'icône avec Tailwind CSS -->
+                <div
+                    *ngIf="tooltipVisible"
+                    class="absolute top-full left-0 mt-2 px-4 py-2 text-sm text-white bg-gray-800 rounded-md shadow-lg z-10 transition-opacity duration-200 opacity-100"
+                >
+                    CLIENT
+                </div>
+            </div>
+        </div>
+        <!-- Right Section -->
+        <div
+            class="flex items-center mt-4 sm:mt-0 sm:ml-4 sm:justify-end gap-4"
+        >
+            <!-- Champ de recherche -->
+            <mat-form-field
+                class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded w-full min-w-64"
+                [floatLabel]="'always'"
+            >
+                <mat-icon
+                    matPrefix
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:search'"
+                ></mat-icon>
+                <input
+                    placeholder="{{ 'placement.search' | transloco }}"
+                    matInput
+                    #query
+                    (input)="applyFilter(query.value)"
+                />
+            </mat-form-field>
+            <!-- Bouton pour ouvrir la modal -->
+            <div
+                class="flex items-center gap-2 mt-4 sm:mt-0 sm:ml-4 sm:justify-end"
+            >
+                <button
+                    class="fuse-mat-button-rounded bg-red-500"
+                    mat-flat-button
+                    (click)="refreshData()"
+                    [color]="'accent'"
+                >
+                    <mat-icon
+                        class="icon-size-5"
+                        [svgIcon]="'heroicons_solid:refresh'"
+                    ></mat-icon>
+                    <span class="ml-2"> Refresh</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-auto overflow-hidden">
+        <div
+            class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto"
+        >
+            <!-- Table -->
+            <table
+                mat-table
+                [dataSource]="fileDataSource"
+                class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                matSort
+                *ngIf="!isLoading"
+            >
+                <!-- ID Column -->
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        ID
+                    </th>
+                    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                </ng-container>
+
+                <!-- Nom Client Column -->
+                <ng-container matColumnDef="nom_client">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Client Name
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.nom_client }}
+                    </td>
+                </ng-container>
+
+                <!-- Adresse Column -->
+                <ng-container matColumnDef="adresse">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Adress
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.adresse }}
+                    </td>
+                </ng-container>
+
+                <!-- Ville Column -->
+                <ng-container matColumnDef="ville">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        City
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.ville }}
+                    </td>
+                </ng-container>
+
+                <!-- Téléphone Column -->
+                <ng-container matColumnDef="telephone">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Phone
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.telephone }}
+                    </td>
+                </ng-container>
+
+                <!-- Code Postale Column -->
+                <ng-container matColumnDef="code_postale">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Postal Code
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.code_postale }}
+                    </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Actions</th>
+                    <td mat-cell *matCellDef="let element">
+                        <!-- Icône pour "Voir Détails" -->
+                        <button
+                            mat-icon-button
+                            color="primary"
+                            (click)="viewClientDetails(element)"
+                            matTooltip="Voir Détails"
+                        >
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+
+                        <!-- Icône pour "Modifier" -->
+                        <button
+                            mat-icon-button
+                            color="accent"
+                            (click)="viewEditClient(element.id)"
+                            matTooltip="Modifier"
+                        >
+                            <mat-icon>edit</mat-icon>
+                        </button>
+
+                        <!-- Icône pour "Supprimer" -->
+                        <button
+                            mat-icon-button
+                            color="warn"
+                            (click)="deleteClient(element.id)"
+                            matTooltip="Supprimer"
+                        >
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Header Row -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+                <!-- Data Row -->
+                <tr
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                ></tr>
+            </table>
+
+            <!-- Paginator -->
+            <mat-paginator
+                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                [length]="totalItems"
+                [pageSizeOptions]="[10, 20, 25, 100]"
+                aria-label="Select page"
+                [showFirstLastButtons]="true"
+                (page)="handlePageEvent($event)"
+            ></mat-paginator>
+
+            <div
+                class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center"
+                *ngIf="!isLoading && !fileDataSource?.data.length"
+            >
+                Il n'y a pas de clients !
+            </div>
+            <!-- No courses -->
+            <ng-template #noCourses>
+                <div
+                    class="flex flex-auto flex-col items-center justify-center bg-gray-100 dark:bg-transparent"
+                >
+                    <mat-icon
+                        class="icon-size-20"
+                        [svgIcon]="'iconsmind:file_search'"
+                    ></mat-icon>
+                    <div
+                        class="mt-6 text-2xl font-semibold tracking-tight text-secondary"
+                    >
+                        No courses found!
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

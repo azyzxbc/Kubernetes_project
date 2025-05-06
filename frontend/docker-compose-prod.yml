@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  nginx:
+    build: ./nginx
+    container_name: cvex-nginx
+    volumes:
+        - ./cvex-front/dist/fuse:/usr/share/nginx/html
+    ports:
+      - "${CVEX_NGINX_PORT1}:80"
+      - "${CVEX_NGINX_PORT2}:443"
+

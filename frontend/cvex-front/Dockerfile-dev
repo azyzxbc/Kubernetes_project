@@ -1,0 +1,14 @@
+From node:18.16.0
+ENV NODE_ENV=development
+run mkdir /cvex_front
+workdir /cvex_front
+copy package.json .
+copy package-lock.json .
+run npm install --force --development
+Copy . .
+
+
+
+
+
+

@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  owncloud:
+    image: owncloud/server:latest
+    container_name: owncloud
+    volumes:
+      - ./owncloud-data:/mnt/data
+    env_file:
+      - ./environment/.env.owncloud
+    ports:
+      - "${CVEX_OWNCLOUD_PORT}:8080"

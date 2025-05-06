@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Add a comment for the candidate : <span style="color: #f32a35;">{{ data.id_candidat__nom}}</span> </h2>
+
+<div mat-dialog-content class="mat-typography">
+    <div class="grid-container">
+        <!-- RH Section -->
+        <div class="grid-item rh-section">
+            <label for="rh">HR</label>
+            <textarea
+                id="rh"
+                matInput
+                placeholder="Entrez vos commentaires pour RH"
+                [(ngModel)]="comments.note_rh"
+            ></textarea>
+        </div>
+
+        <!-- Technique Section -->
+        <div class="grid-item technique-section">
+            <label for="technique">Technical</label>
+            <textarea
+                id="technique"
+                matInput
+                placeholder="Entrez vos commentaires pour Technique"
+                [(ngModel)]="comments.note_technique"
+            ></textarea>
+        </div>
+
+        <!-- DG Section -->
+        <div class="grid-item dg-section">
+            <label for="dg">General Director</label>
+            <textarea
+                id="dg"
+                matInput
+                placeholder="Entrez vos commentaires pour DG"
+                [(ngModel)]="comments.note_dg"
+            ></textarea>
+        </div>
+
+        <!-- Test Technique Section -->
+        <div class="grid-item test-technique-section">
+            <label for="test-technique">Technical Test</label>
+            <textarea
+                id="test-technique"
+                matInput
+                placeholder="Entrez vos commentaires pour Test Technique"
+                [(ngModel)]="comments.note_test_technique"
+            ></textarea>
+        </div>
+    </div>
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-raised-button color="accent" (click)="saveNotes()">
+        Save
+    </button>
+    <button mat-raised-button mat-dialog-close>Close</button>
+</div>

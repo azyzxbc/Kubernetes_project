@@ -1,0 +1,567 @@
+<div class="flex flex-col flex-auto min-w-0 bg-white">
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 px-6 md:px-8 border-b bg-white"
+    >
+        <!-- Left Section -->
+        <div class="flex-1">
+            <div
+                class="text-3xl font-extrabold tracking-tight uppercase group relative"
+            >
+                <!-- Titre avec l'icône d'information devant -->
+                Job Name :
+                <span style="color: #f32a35"> {{ card?.file_name }}</span>
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div
+            class="flex items-center gap-2 mt-4 sm:mt-0 sm:ml-4 sm:justify-end"
+        >
+            <button
+                class="fuse-mat-button-rounded bg-red-500"
+                mat-flat-button
+                (click)="refreshData()"
+                [color]="'accent'"
+            >
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:refresh'"
+                ></mat-icon>
+                <span class="ml-2"> Refresh </span>
+            </button>
+            <button
+                class="fuse-mat-button-rounded bg-red-500"
+                mat-flat-button
+                (click)="sendMail()"
+                [color]="'accent'"
+            >
+                <mat-icon
+                    class="icon-size-5"
+                    [svgIcon]="'heroicons_solid:mail'"
+                ></mat-icon>
+                <span class="ml-2"> Send Email(s) </span>
+            </button>
+        </div>
+    </div>
+    <!-- Main -->
+    <div *ngIf="candidates.length > 0">
+        <mat-tab-group [(selectedIndex)]="activeTabIndex">
+            <mat-tab
+                class="p-0"
+                label=" {{ 'more_details.result' | transloco }}"
+            >
+                <ng-template matTabContent>
+                    <div class="w-full">
+                        <table
+                            mat-table
+                            [dataSource]="candidates"
+                            class="w-full"
+                            matSort
+                        >
+                            <!-- Name Column -->
+                            <ng-container matColumnDef="name">
+                                <th
+                                    mat-header-cell
+                                    *matHeaderCellDef
+                                    mat-sort-header
+                                >
+                                    {{ "more_details.name" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    {{ candidate.id_candidat__nom }}
+                                </td>
+                            </ng-container>
+                            <!-- File Name Location -->
+                            <ng-container matColumnDef="location">
+                                <th
+                                    mat-header-cell
+                                    *matHeaderCellDef
+                                    mat-sort-header
+                                >
+                                    Location
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    {{
+                                        candidate.id_candidat__pays_de_residence
+                                    }}
+                                </td>
+                            </ng-container>
+                            <!-- File Name Experience -->
+
+                            <ng-container matColumnDef="nbr_exp">
+                                <th
+                                    mat-header-cell
+                                    *matHeaderCellDef
+                                    mat-sort-header
+                                >
+                                    Nbr Exp
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    {{ candidate.id_candidat__nbrexp }} ans
+                                </td>
+                            </ng-container>
+                            <!-- Score Column -->
+                            <ng-container matColumnDef="score">
+                                <th
+                                    mat-header-cell
+                                    *matHeaderCellDef
+                                    mat-sort-header
+                                >
+                                    {{ "more_details.score" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    {{
+                                        candidate.similarity_score
+                                            | percent : "1.2-2"
+                                    }}
+                                </td>
+                            </ng-container>
+                            <!-- File Name CV link -->
+
+                            <ng-container matColumnDef="link">
+                                <th
+                                    mat-header-cell
+                                    *matHeaderCellDef
+                                    mat-sort-header
+                                >
+                                    {{ "more_details.cvlink" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    <a
+                                        href="{{
+                                            candidate.id_candidat__CV_Link
+                                        }}"
+                                        target="_blank"
+                                    >
+                                        <button
+                                            mat-icon-button
+                                            matTooltip="View CV"
+                                        >
+                                            <mat-icon color="primary"
+                                                >visibility</mat-icon
+                                            >
+                                        </button>
+                                    </a>
+                                </td>
+                            </ng-container>
+                            <!-- Add to Table Column -->
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Actions
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    <a
+                                        href="{{
+                                            candidate.id_candidat__linkedin_url
+                                        }}"
+                                        target="_blank"
+                                    >
+                                        <button
+                                            mat-icon-button
+                                            matTooltip="View LinkedIn Profile"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                height="24"
+                                                viewBox="0 0 24 24"
+                                                width="24"
+                                                fill="#0077b5"
+                                            >
+                                                <path
+                                                    d="M22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0zM7.12 20.45H3.56V9h3.56v11.45zM5.34 7.52c-1.14 0-2.06-.92-2.06-2.06s.92-2.06 2.06-2.06 2.06.92 2.06 2.06-.92 2.06-2.06 2.06zM20.45 20.45h-3.56v-5.45c0-1.3-.03-2.98-1.82-2.98-1.82 0-2.1 1.42-2.1 2.88v5.55h-3.56V9h3.41v1.56h.05c.47-.88 1.61-1.8 3.31-1.8 3.54 0 4.19 2.33 4.19 5.35v6.34z"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </a>
+
+                                    <button
+                                        mat-icon-button
+                                        (click)="addCandidateToTable(candidate)"
+                                        *ngIf="!candidateExists(candidate)"
+                                        matTooltip="Select Candidate"
+                                    >
+                                        <mat-icon color="primary"
+                                            >star_border</mat-icon
+                                        >
+                                    </button>
+                                    <button
+                                        matTooltip="Already In Favorit"
+                                        mat-icon-button
+                                        *ngIf="candidateExists(candidate)"
+                                    >
+                                        <mat-icon color="primary"
+                                            >star</mat-icon
+                                        >
+                                    </button>
+                                </td>
+                            </ng-container>
+                            <tr
+                                mat-header-row
+                                *matHeaderRowDef="displayedColumns"
+                            ></tr>
+                            <tr
+                                class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                                mat-row
+                                *matRowDef="let row; columns: displayedColumns"
+                            ></tr>
+                        </table>
+                    </div>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label=" {{ 'more_details.selected' | transloco }}">
+                <ng-template matTabContent>
+                    <div class="w-full">
+                        <table
+                            *ngIf="candidatesData.length > 0"
+                            mat-table
+                            [dataSource]="candidatesData"
+                            class="w-full"
+                        >
+                            <!-- Define your columns -->
+                            <ng-container matColumnDef="select">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div>
+                                        <mat-checkbox
+                                            (change)="
+                                                toggleSelectAll(
+                                                    $event.target.checked
+                                                )
+                                            "
+                                        ></mat-checkbox>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    <div>
+                                        <mat-checkbox
+                                            id="checkbox-{{
+                                                candidate.id_candidat
+                                            }}"
+                                            [(ngModel)]="candidate.selected"
+                                        ></mat-checkbox>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="id_candidat__nom">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.name" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    {{ candidate.id_candidat__nom }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="id_candidat__phone">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.phone" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    {{ candidate.id_candidat__phone }}
+                                </td>
+                            </ng-container>
+                            <!-- <ng-container matColumnDef="id_candidat__email">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.email" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    {{ candidate.id_candidat__email }}
+                                </td>
+                            </ng-container> -->
+
+                            <ng-container matColumnDef="technique">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.technique" | transloco }}
+                                </th>
+                                <td
+                                    mat-cell
+                                    *matCellDef="let candidate"
+                                    [ngStyle]="{
+                                        color: getStatusColor(
+                                            candidate.technique
+                                        )
+                                    }"
+                                >
+                                    <div class="flex items-center justify-center gap-1">
+                                        <span
+                                            class="w-3.5 h-3.5 rounded-full"
+                                            [ngStyle]="{
+                                                backgroundColor: getStatusColor(
+                                                    candidate.technique
+                                                )
+                                            }"
+                                        ></span>
+                                        <select
+                                            aria-label="Technique Status"
+                                            [(ngModel)]="candidate.technique"
+                                            (change)="
+                                                updateCandidate(candidate)
+                                            "
+                                            class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option
+                                                *ngFor="let status of statuses"
+                                                [value]="status"
+                                                class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                [ngStyle]="{
+                                                    color: getStatusColor(
+                                                        status
+                                                    )
+                                                }"
+                                            >
+                                                {{ status }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="test_technique">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.test" | transloco }}
+                                </th>
+                                <td
+                                    mat-cell
+                                    *matCellDef="let candidate"
+                                    [ngStyle]="{
+                                        color: getStatusColor(
+                                            candidate.test_technique
+                                        )
+                                    }"
+                                >
+                                    <div class="flex items-center justify-center gap-1">
+                                        <span
+                                            class="w-3.5 h-3.5 rounded-full"
+                                            [ngStyle]="{
+                                                backgroundColor: getStatusColor(
+                                                    candidate.test_technique
+                                                )
+                                            }"
+                                        ></span>
+                                        <select
+                                            aria-label="Test Technique Status"
+                                            [(ngModel)]="
+                                                candidate.test_technique
+                                            "
+                                            (change)="
+                                                updateCandidate(candidate)
+                                            "
+                                            class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option
+                                                *ngFor="let status of statuses"
+                                                [value]="status"
+                                                class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                [ngStyle]="{
+                                                    color: getStatusColor(
+                                                        status
+                                                    )
+                                                }"
+                                            >
+                                                {{ status }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="rh">
+                                <th mat-header-cell *matHeaderCellDef>RH</th>
+                                <td
+                                    mat-cell
+                                    *matCellDef="let candidate"
+                                    [ngStyle]="{
+                                        color: getStatusColor(candidate.rh)
+                                    }"
+                                >
+                                    <div class="flex items-center justify-center gap-1">
+                                        <span
+                                            class="w-3.5 h-3.5 rounded-full"
+                                            [ngStyle]="{
+                                                backgroundColor: getStatusColor(
+                                                    candidate.rh
+                                                )
+                                            }"
+                                        ></span>
+                                        <select
+                                            aria-label="RH Status"
+                                            class="form-select"
+                                            [(ngModel)]="candidate.rh"
+                                            (change)="
+                                                updateCandidate(candidate)
+                                            "
+                                            class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option
+                                                *ngFor="let status of statuses"
+                                                [value]="status"
+                                                class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                [ngStyle]="{
+                                                    color: getStatusColor(
+                                                        status
+                                                    )
+                                                }"
+                                            >
+                                                {{ status }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="dg">
+                                <th mat-header-cell *matHeaderCellDef>DG</th>
+                                <td
+                                    mat-cell
+                                    *matCellDef="let candidate"
+                                    [ngStyle]="{
+                                        color: getStatusColor(candidate.dg)
+                                    }"
+                                >
+                                    <div class="flex items-center justify-center gap-1">
+                                        <span
+                                            class="w-3.5 h-3.5 rounded-full"
+                                            [ngStyle]="{
+                                                backgroundColor: getStatusColor(
+                                                    candidate.dg
+                                                )
+                                            }"
+                                        ></span>
+                                        <select
+                                            aria-label="DG Status"
+                                            [(ngModel)]="candidate.dg"
+                                            (change)="
+                                                updateCandidate(candidate)
+                                            "
+                                            class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option
+                                                *ngFor="let status of statuses"
+                                                [value]="status"
+                                                class="border font-bold border-gray-300 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                [ngStyle]="{
+                                                    color: getStatusColor(
+                                                        status
+                                                    )
+                                                }"
+                                            >
+                                                {{ status }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="similarity_score">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.similary" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    {{
+                                        candidate.similarity_score
+                                            | percent : "1.2-2"
+                                    }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="id_candidat__CV_Link">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.cvlink" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    <a
+                                        [href]="candidate.id_candidat__CV_Link"
+                                        target="_blank"
+                                    >
+                                        <button mat-icon-button>
+                                            <mat-icon
+                                                color="primary"
+                                                matTooltip="View CV"
+                                                >visibility</mat-icon
+                                            >
+                                        </button>
+                                    </a>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="note">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.note" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    <button
+                                        mat-icon-button
+                                        mat-button
+                                        (click)="viewJobNotes(candidate.id)"
+                                        matTooltip="View And Edit Notes"
+                                    >
+                                        <mat-icon color="primary"
+                                            >edit_note</mat-icon
+                                        >
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="defavori">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "more_details.remove" | transloco }}
+                                </th>
+                                <td mat-cell *matCellDef="let candidate">
+                                    <button
+                                        mat-icon-button
+                                        mat-button
+                                        (click)="defavori(candidate.id)"
+                                        matTooltip="Remove From Favorit"
+                                    >
+                                        <mat-icon color="warn">star</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+                            <tr
+                                mat-header-row
+                                *matHeaderRowDef="displayedColumnsSelected"
+                            ></tr>
+                            <tr
+                                class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                                mat-row
+                                *matRowDef="
+                                    let row;
+                                    columns: displayedColumnsSelected
+                                "
+                            ></tr>
+                        </table>
+                        <mat-card
+                            *ngIf="candidatesData.length === 0"
+                            class="bg-red-100 text-red-700 p-4 rounded-lg"
+                        >
+                            <div class="font-bold">
+                                {{ "more_details.no" | transloco }}
+                            </div>
+                        </mat-card>
+                    </div>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+    <mat-paginator
+        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+        [pageSizeOptions]="[10, 20, 25, 100]"
+        aria-label="Select page"
+        [showFirstLastButtons]="true"
+    ></mat-paginator>
+    <div class="d-flex justify-center align-center mt-5">
+        <mat-card
+            *ngIf="
+                !isLoading &&
+                candidatesData.length === 0 &&
+                candidates.length === 0
+            "
+            class="bg-red-100 text-red-700 p-4 rounded-lg text-center"
+        >
+            <div class="font-bold">No candidates found for this job.</div>
+            <button
+                mat-icon-button
+                (click)="goBackToPrevPage()"
+                class="bg-danger"
+            >
+                <mat-icon style="color: #040120">arrow_back</mat-icon>
+            </button>
+        </mat-card>
+    </div>
+</div>

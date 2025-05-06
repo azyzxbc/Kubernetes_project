@@ -1,0 +1,390 @@
+<div class="flex flex-col flex-auto min-w-0 bg-white">
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between py-2 px-6 md:px-8 border-b bg-white"
+    >
+        <!-- Left Section -->
+        <div class="flex-1">
+            <div
+                class="text-2xl font-extrabold tracking-tight uppercase group relative"
+            >
+                Profile :
+                <span class="text-red-600">{{ userData?.nickname }}</span>
+                <mat-icon class="cursor-pointer ml-2" (click)="toggleTooltip()"
+                    >info</mat-icon
+                >
+
+                <!-- Tooltip -->
+                <div
+                    *ngIf="tooltipVisible"
+                    class="absolute top-full left-0 mt-2 px-4 py-2 text-sm text-white bg-gray-800 rounded-md shadow-lg z-10 transition-opacity duration-200 opacity-100"
+                >
+                    Manage your user profile here
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div
+            class="flex items-center gap-2 mt-4 sm:mt-0 sm:ml-4 sm:justify-end"
+        >
+            <button
+                class="fuse-mat-button-rounded bg-red-500"
+                mat-flat-button
+                color="accent"
+            >
+                <mat-icon
+                    class="icon-size-5"
+                    svgIcon="heroicons_solid:refresh"
+                ></mat-icon>
+                <span class="ml-2">Refresh</span>
+            </button>
+            <button
+                class="fuse-mat-button-rounded bg-red-500"
+                mat-flat-button
+                color="accent"
+            >
+                <mat-icon
+                    class="icon-size-5"
+                    svgIcon="heroicons_solid:mail"
+                ></mat-icon>
+                <span class="ml-2">Send Email(s)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Tab Group -->
+    <mat-tab-group>
+        <!-- Tab: User Details -->
+        <mat-tab label="User Details" class="justify-center items-center">
+            <div class="w-full p-6 border border-gray-200">
+                <h2 class="text-xl font-bold mb-4">User Details</h2>
+                <form [formGroup]="userDetailsForm" (ngSubmit)="updateUserDetails()" >
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Full Name -->
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>First Name</mat-label>
+                            <input
+                                matInput
+                                formControlName="given_name"
+                                placeholder="Enter name"
+                            />
+                            <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('given_name')
+                                        .hasError('required')
+                                "
+                            >
+                                Full name is required
+                            </mat-error>
+                            <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('given_name')
+                                        .hasError('minlength')
+                                "
+                            >
+                                First Name must be at least 3 characters
+                            </mat-error>
+                        </mat-form-field>
+
+                        <!-- Display Name -->
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Family Name</mat-label>
+                            <input
+                                matInput
+                                formControlName="family_name"
+                                placeholder="Enter family name"
+                            />
+                            <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('family_name')
+                                        .hasError('required')
+                                "
+                            >
+                            Family Name is required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <!-- Email -->
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Email</mat-label>
+                            <input
+                                matInput
+                                type="email"
+                                formControlName="email"
+                                placeholder="Enter email address"
+                            />
+                            <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('email')
+                                        .hasError('required')
+                                "
+                            >
+                                Email is required
+                            </mat-error>
+                            <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('email')
+                                        .hasError('email')
+                                "
+                            >
+                                Enter a valid email address
+                            </mat-error>
+                        </mat-form-field>
+
+                        <!-- Phone -->
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Phone</mat-label>
+                            <input
+                                matInput
+                                formControlName="phone_number"
+                                placeholder="Enter phone number"
+                            />
+                            <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('phone_number')
+                                        .hasError('required')
+                                "
+                            >
+                                Phone number is required
+                            </mat-error>
+                            <!-- <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('phone_number')
+                                        .hasError('pattern')
+                                "
+                            >
+                                Enter a valid phone number
+                            </mat-error> -->
+                        </mat-form-field>
+                        <!-- Location -->
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Location</mat-label>
+                            <input
+                                matInput
+                                formControlName="location"
+                                placeholder="Enter location"
+                            />
+                            <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('location')
+                                        .hasError('required')
+                                "
+                            >
+                                Location is required
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>Company Name</mat-label>
+                            <input
+                                matInput
+                                formControlName="company"
+                                placeholder="Enter company name"
+                            />
+                            <mat-error
+                                *ngIf="
+                                    userDetailsForm
+                                        .get('company')
+                                        .hasError('required')
+                                "
+                            >
+                            company is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="w-full flex justify-end items-center">
+                        <button
+                            mat-raised-button
+                            color="accent"
+                            type="submit"
+                            class="w-full sm:w-auto"
+                        >
+                            <mat-icon class="mr-2">save</mat-icon> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </mat-tab>
+
+        <!-- Tab: Reset Password -->
+        <mat-tab label="Reset Password">
+            <div
+                class="w-full p-6 border border-gray-200 flex justify-center items-center"
+            >
+                <div class="w-[50%]">
+                    <h2 class="text-xl font-bold mb-4">Reset Password</h2>
+                    <form [formGroup]="resetPasswordForm"  (ngSubmit)="updateUserPassword()">
+                        <mat-form-field
+                            appearance="outline"
+                            class="w-full mb-4"
+                        >
+                            <mat-label>Old Password</mat-label>
+                            <input
+                                matInput
+                                [type]="hideOld ? 'password' : 'text'"
+                                formControlName="oldPassword"
+                                placeholder="Enter old password"
+                            />
+                            <button
+                                mat-icon-button
+                                matSuffix
+                                (click)="hideOld = !hideOld"
+                                [attr.aria-label]="'Hide password'"
+                                [attr.aria-pressed]="hideOld"
+                                type="button"
+                            >
+                                <mat-icon>{{
+                                    hideOld ? "visibility_off" : "visibility"
+                                }}</mat-icon>
+                            </button>
+                            <mat-error
+                                *ngIf="
+                                    resetPasswordForm
+                                        .get('oldPassword')
+                                        .hasError('required')
+                                "
+                            >
+                                Old password is required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field
+                            appearance="outline"
+                            class="w-full mb-4"
+                        >
+                            <mat-label>New Password</mat-label>
+                            <input
+                                matInput
+                                [type]="hideNew ? 'password' : 'text'"
+                                formControlName="newPassword"
+                                placeholder="Enter new password"
+                            />
+                            <button
+                                mat-icon-button
+                                matSuffix
+                                (click)="hideNew = !hideNew"
+                                [attr.aria-label]="'Hide password'"
+                                [attr.aria-pressed]="hideNew"
+                                type="button"
+                            >
+                                <mat-icon>{{
+                                    hideNew ? "visibility_off" : "visibility"
+                                }}</mat-icon>
+                            </button>
+                            <mat-error
+                                *ngIf="
+                                    resetPasswordForm
+                                        .get('newPassword')
+                                        .hasError('required')
+                                "
+                            >
+                                New password is required
+                            </mat-error>
+                            <mat-error
+                                *ngIf="
+                                    resetPasswordForm
+                                        .get('newPassword')
+                                        .hasError('minlength')
+                                "
+                            >
+                                Password must be at least 6 characters
+                            </mat-error>
+                            <mat-error
+                                *ngIf="
+                                    resetPasswordForm
+                                        .get('newPassword')
+                                        .hasError('pattern')
+                                "
+                            >
+                                Password must include letters and numbers
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field
+                            appearance="outline"
+                            class="w-full mb-4"
+                        >
+                            <mat-label>Confirm Password</mat-label>
+                            <input
+                                matInput
+                                [type]="hideConfirm ? 'password' : 'text'"
+                                formControlName="confirmPassword"
+                                placeholder="Confirm password"
+                            />
+                            <button
+                                mat-icon-button
+                                matSuffix
+                                (click)="hideConfirm = !hideConfirm"
+                                [attr.aria-label]="'Hide password'"
+                                [attr.aria-pressed]="hideConfirm"
+                                type="button"
+                            >
+                                <mat-icon>{{
+                                    hideConfirm
+                                        ? "visibility_off"
+                                        : "visibility"
+                                }}</mat-icon>
+                            </button>
+                            <mat-error
+                                *ngIf="
+                                    resetPasswordForm
+                                        .get('confirmPassword')
+                                        .hasError('required')
+                                "
+                            >
+                                Confirm password is required
+                            </mat-error>
+                            <mat-error
+                                *ngIf="
+                                    resetPasswordForm
+                                        .get('confirmPassword')
+                                        .hasError('minlength')
+                                "
+                            >
+                                Confirm password must be at least 6 characters
+                            </mat-error>
+                            <mat-error
+                                *ngIf="
+                                    resetPasswordForm
+                                        .get('confirmPassword')
+                                        .hasError('pattern')
+                                "
+                            >
+                                Confirm password must include letters and
+                                numbers
+                            </mat-error>
+                            <mat-error
+                                *ngIf="
+                                    resetPasswordForm.errors
+                                        ?.passwordMismatch &&
+                                    resetPasswordForm.touched
+                                "
+                            >
+                                Les mots de passe ne correspondent pas
+                            </mat-error>
+                        </mat-form-field>
+
+                        <div class="w-full flex justify-end items-center">
+                            <button
+                                mat-raised-button
+                                color="accent"
+                                type="submit"
+                            >
+                                <mat-icon class="mr-2">save</mat-icon> Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

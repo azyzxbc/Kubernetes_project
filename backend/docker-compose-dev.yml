@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+
+  pgdb_cvex:
+    image: pgvector/pgvector:pg16
+    container_name: pgdb_cvex
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./environment/.env.db
+    ports:
+      - "${CVEX_PGDB_PORT}:5432"
+
+  api_cvex:
+    build: ./get-talent
+    container_name: api_cvex    
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./get-talent:/code/get-talent
+    env_file:
+      - ./environment/.env.api
+    ports:
+      - "${CVEX_Back_PORT}:8000"
+    depends_on:
+      - pgdb_cvex
+
+
+
+  adminer:
+    image: adminer
+    ports:
+      - "${CVEX_Back_adminer}:8080"
+
+      
+volumes:
+  postgres_data:
+

@@ -1,0 +1,263 @@
+<!-- Modal Header -->
+<div
+    mat-dialog-title
+    class="flex items-center justify-between px-5 py-4 border-b rounded-t"
+>
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+        Edit Client
+    </h3>
+    <button
+        type="button"
+        mat-dialog-close
+        class="text-gray-500 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+    >
+        <svg
+            class="w-4 h-4"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 14"
+        >
+            <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+            />
+        </svg>
+        <span class="sr-only">Close modal</span>
+    </button>
+</div>
+
+<!-- Modal Content -->
+<div mat-dialog-content class="p-5 overflow-y-auto">
+    <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Grid Layout for Fields -->
+        <div class="grid gap-4 grid-cols-1 sm:grid-cols-2">
+            <!-- Nom Client -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="nom_client">Client Name</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="nom_client"
+                        id="nom_client"
+                        placeholder="Client Name"
+                        required
+                    />
+                    <mat-error
+                        *ngIf="
+                            clientForm.get('nom_client')?.hasError('required')
+                        "
+                    >
+                        Client Name is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Adresse -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="adresse">Address</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="adresse"
+                        id="adresse"
+                        placeholder="Address"
+                        required
+                    />
+                    <mat-error
+                        *ngIf="clientForm.get('adresse')?.hasError('required')"
+                    >
+                        Address is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Ville -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="ville">City</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="ville"
+                        id="ville"
+                        placeholder="City"
+                        required
+                    />
+                    <mat-error
+                        *ngIf="clientForm.get('ville')?.hasError('required')"
+                    >
+                        City is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Code Postal -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="code_postale">Postal Code</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="code_postale"
+                        id="code_postale"
+                        placeholder="Postal Code"
+                        required
+                    />
+                    <mat-error
+                        *ngIf="
+                            clientForm.get('code_postale')?.hasError('required')
+                        "
+                    >
+                        Postal Code is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Téléphone -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="telephone">Phone</mat-label>
+                    <input
+                        matInput
+                        type="tel"
+                        formControlName="telephone"
+                        id="telephone"
+                        placeholder="Phone"
+                        required
+                    />
+                    <mat-error
+                        *ngIf="
+                            clientForm.get('telephone')?.hasError('required')
+                        "
+                    >
+                        Phone is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Mobile -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="mobile">Mobile</mat-label>
+                    <input
+                        matInput
+                        type="tel"
+                        formControlName="mobile"
+                        id="mobile"
+                        placeholder="Mobile"
+                    />
+                    <mat-error
+                        *ngIf="clientForm.get('mobile')?.hasError('required')"
+                    >
+                        Mobile is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="courriel">Email</mat-label>
+                    <input
+                        matInput
+                        type="email"
+                        formControlName="courriel"
+                        id="courriel"
+                        placeholder="Email"
+                        required
+                    />
+                    <mat-error
+                        *ngIf="clientForm.get('courriel')?.hasError('required')"
+                    >
+                        Email is required.
+                    </mat-error>
+                    <mat-error
+                        *ngIf="clientForm.get('courriel')?.hasError('email')"
+                    >
+                        Enter a valid email address.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Site Web -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="site_web">Website</mat-label>
+                    <input
+                        matInput
+                        type="url"
+                        formControlName="site_web"
+                        id="site_web"
+                        placeholder="Website"
+                    />
+                    <mat-error
+                        *ngIf="clientForm.get('site_web')?.hasError('required')"
+                    >
+                        Website is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Langue -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="langue">Language</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="langue"
+                        id="langue"
+                        placeholder="Language"
+                        required
+                    />
+                    <mat-error
+                        *ngIf="clientForm.get('langue')?.hasError('required')"
+                    >
+                        Language is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Numéro Fiscal -->
+            <div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label for="numero_fiscale">Fiscal Number</mat-label>
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="numero_fiscale"
+                        id="numero_fiscale"
+                        placeholder="Fiscal Number"
+                    />
+                    <mat-error
+                        *ngIf="
+                            clientForm
+                                .get('numero_fiscale')
+                                ?.hasError('required')
+                        "
+                    >
+                        Fiscal Number is required.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal Actions -->
+<div
+    mat-dialog-actions
+    class="flex items-center justify-end px-5 py-4 border-t rounded-b"
+>
+    <button mat-raised-button color="accent" type="submit" (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        <span class="ml-2"> Save</span>
+    </button>
+    <button mat-button mat-dialog-close>Close</button>
+</div>

@@ -1,0 +1,142 @@
+<!-- Loading bar -->
+
+<fuse-loading-bar></fuse-loading-bar>
+
+<!-- Navigation -->
+<fuse-vertical-navigation
+    [mode]="isScreenSmall ? 'over' : 'side'"
+    [name]="'mainNavigation'"
+    [navigation]="navigation.default"
+    [opened]="!isScreenSmall"
+    class="dark bg-gray-900 print:hidden"
+>
+    <!-- Navigation header hook -->
+    <ng-container fuseVerticalNavigationContentHeader>
+        <!-- Logo -->
+        <div class="flex items-center justify-center h-16 bg-white">
+            <img
+                class="max-w-28"
+                src="../../../../../assets/images/logo/final.png"
+            />
+        </div>
+        <!-- Components -->
+        <!-- User -->
+        <!-- <div class="w-[80%] h-px bg-gray-300 my-2 mx-auto"></div> -->
+
+        <div class="flex flex-col items-center w-full p-2 mt-4">
+            <div
+                class="relative w-15 h-15 flex items-center justify-center rounded-full bg-gray-600 text-gray text-3xl font-bold"
+                [ngStyle]="{
+                    'background-image': userProfile?.picture
+                        ? 'url(' + userProfile.picture + ')'
+                        : '',
+                    'background-size': 'cover',
+                    'background-position': 'center'
+                }"
+            >
+                <!-- Afficher les premières lettres si l'image n'est pas disponible -->
+                <span *ngIf="!userProfile?.picture">
+                    {{
+                        userProfile?.email.split("@")[0].split(".")[0][0]
+                            | uppercase
+                    }}
+                </span>
+            </div>
+
+            <div class="flex flex-col items-center justify-center w-full mt-4">
+                <div
+                    class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-sm"
+                >
+                    {{ userProfile?.nickname }}
+                </div>
+                <div
+                    class="w-full mt-0.5 whitespace-nowrap text-ellipsis overflow-hidden text-center text-md leading-normal font-medium text-secondary"
+                >
+                    {{ userProfile?.email.split("@")[1].split(".")[0] }}
+                </div>
+            </div>
+            <!-- <div
+                class="flex items-center content-center pl-2 space-x-0.5 sm:space-x-2 mt-2"
+            >
+                <div class="hidden sm:block">
+                    <p
+                        class="text-lg font-semibold text-gray-700 dark:text-gray-300"
+                    >
+                        Bienvenue,
+                    </p>
+                </div>
+
+                <div class="flex flex-col items-start">
+                    <span
+                        *ngIf="auth.user$ | async as user"
+                        class="text-sm font-medium text-gray-900 dark:text-white"
+                        title="{{ userProfile.email }}"
+                    >
+                        {{ userProfile?.name }}
+                    </span>
+                    <span
+                        class="text-xs font-medium text-gray-500 dark:text-gray-400"
+                    >
+                        {{ userProfile.nickname }}
+                    </span>
+                </div>
+            </div> -->
+        </div>
+        <div class="w-[80%] h-px bg-gray-300 my-2 mx-auto"></div>
+    </ng-container>
+    <!-- <ng-container fuseVerticalNavigationContentFooter>
+        <div
+            class="flex flex-0 items-center justify-center h-16 pr-6 pl-2 mt-2 mb-4 opacity-30 bg-white"
+        >
+            <img
+                class="max-w-36"
+                src="../../../../../assets/images/logo/final.png"
+            />
+        </div>
+    </ng-container> -->
+</fuse-vertical-navigation>
+
+<!-- Wrapper -->
+<div class="flex flex-col flex-auto w-full min-w-0">
+    <!-- Header -->
+    <div
+        class="relative flex flex-0 items-center justify-between w-full h-16 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden"
+    >
+        <button (click)="toggleNavigation('mainNavigation')" mat-icon-button>
+            <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+        </button>
+        <!-- Components -->
+        <div class="flex items-center content-center gap-2">
+            <div class="hidden sm:block">
+                <p
+                    class="text-lg font-semibold text-gray-700 dark:text-gray-300"
+                >
+                    Bienvenue,
+                </p>
+            </div>
+
+            <div class="flex flex-col items-start">
+                <span
+                    class="text-sm font-medium text-gray-900 dark:text-white"
+                    title="{{ userProfile?.email }}"
+                >
+                    {{ userProfile?.nickname }}
+                </span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">
+                    {{ userProfile?.email }}
+                </span>
+            </div>
+            <languages></languages>
+
+            <fuse-fullscreen class="hidden md:block"></fuse-fullscreen>
+            <search [appearance]="'bar'"></search>
+            <!-- <shortcuts></shortcuts> -->
+            <!-- <notifications></notifications> -->
+            <user></user>
+        </div>
+    </div>
+    <div class="flex flex-col flex-auto">
+        <router-outlet *ngIf="true"></router-outlet>
+    </div>
+</div>
+<!-- <quick-chat #quickChat="quickChat"></quick-chat> -->

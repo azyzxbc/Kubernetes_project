@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  front:
+    build:
+      context: ./cvex-front
+      dockerfile: Dockerfile-dev
+    container_name: cvex_front_dev
+    volumes:
+      - ./cvex-front/src:/cvex_front/src/
+      - ./cvex-front/dist:/cvex_front/dist/
+      - ./cvex-front/package.json:/cvex_front/package.json
+      - ./cvex-front/package-lock.json:/cvex_front/package-lock.json
+    command: /cvex_front/node_modules/.bin/ng serve --host 0.0.0.0 --disable-host-check
+    ports:
+      - "${CVEX_FRONT_PORT}:4200"
+
